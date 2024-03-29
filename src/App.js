@@ -3,8 +3,10 @@ import React from 'react';
 
 function App() {
   return (
-    <div >
-      hello
+    <div className="App">
+      <header className="App-header">
+        <h1>Stack Overflow Tags</h1>
+      </header>
     </div>
   );
 }
