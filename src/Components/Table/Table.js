@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,34 +7,67 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { TableSortLabel } from '@mui/material';
+import axios from 'axios';
+import './Table.css';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+function sortTags(tags, field, direction) {
+    return [...tags].sort((a, b) => {
+        if (a[field] < b[field]) {
+            return direction === 'asc' ? -1 : 1;
+        }
+        if (a[field] > b[field]) {
+            return direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
 }
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 function BasicTable() {
+    const [tags, setTags] = useState([]);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [sortField, setSortField] = useState('name');
+
+    useEffect(() => {
+        axios.get('https://api.stackexchange.com/2.3/tags?order=desc&sort=popular&site=stackoverflow')
+            .then((response) => {
+                setTags(response.data.items);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
+
+    const handleSort = (field) => {
+        setSortField(field);
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        setTags(sortTags(tags, field, sortDirection));
+    }
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer component={Paper} className="table-container">
+            <Table sx={{ minWidth: 20 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell align="right">Calories</TableCell>
-                        <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                        <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                        <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                        <TableCell>
+                            <TableSortLabel
+                                active={sortField === 'name'}
+                                direction={sortDirection}
+                                onClick={() => handleSort('name')}
+                            />
+                            Name
+                        </TableCell>
+                        <TableCell align="right">
+                            <TableSortLabel
+                                active={sortField === 'count'}
+                                direction={sortDirection}
+                                onClick={() => handleSort('count')}
+                            />
+                            Count
+                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {tags.map((row) => (
                         <TableRow
                             key={row.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -42,10 +75,7 @@ function BasicTable() {
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
-                            <TableCell align="right">{row.calories}</TableCell>
-                            <TableCell align="right">{row.fat}</TableCell>
-                            <TableCell align="right">{row.carbs}</TableCell>
-                            <TableCell align="right">{row.protein}</TableCell>
+                            <TableCell align="right">{row.count}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
