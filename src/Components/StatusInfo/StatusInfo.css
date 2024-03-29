@@ -1,0 +1,24 @@
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 25vw;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #DAE2ED;
+}
+
+.loader h2 {
+    color: #66BACC;
+}
+
+.error h2 {
+    color: red;
+}
