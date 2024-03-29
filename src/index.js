@@ -9,7 +9,7 @@ import '@fontsource/roboto/700.css';
 
 
 import App from './App';
-import BasicTable from './Components/Table/Table';
+import TableWithPagination from './Components/TableWithPagination/TableWithPagination';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -17,7 +17,7 @@ root.render(
   <React.StrictMode>
     <CssBaseline />
     <App />
-    <BasicTable />
+    <TableWithPagination />
   </React.StrictMode>
 );
 
